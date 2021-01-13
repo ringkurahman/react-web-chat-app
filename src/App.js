@@ -1,25 +1,96 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-function App() {
+import HomeView from './views/Home'
+import SettingsView from './views/Settings'
+import WelcomeView from './views/Welcome'
+import ChatView from './views/Chat'
+import ChatCreateView from './views/ChatCreate'
+import FooterView from './components/Footer'    
+
+import LoadingView from './components/shared/LoadingView'
+
+import { listenToAuthChanged } from './actions/authActions'
+import { listenToConnectionChanges } from './actions/appStatusAction'
+import { checkUserConnection } from './actions/connectionAction'
+import { loadInitialSettings } from './actions/settingsAction'
+
+import PrivateRoute from './components/PrivateRoute'
+
+
+const ContentWrapper = ({children}) => {
+  const isDarkTheme  = useSelector(({settings}) => settings.isDarkTheme);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <div className={`content-wrapper ${isDarkTheme ? 'dark' : 'light'}`}>{children}</div>
+  )
 }
 
-export default App;
+const App = () => {
+
+    const dispatch = useDispatch()
+    const isChecking = useSelector(({ auth }) => auth.isChecking)
+    const isOnline = useSelector(({ app }) => app.isOnline)
+    const user = useSelector(({auth}) => auth.user)
+
+    useEffect(() => {
+      
+        dispatch(loadInitialSettings())
+        const unsubFromAuth = dispatch(listenToAuthChanged())
+        const unsubFromConnection = dispatch(listenToConnectionChanges())
+
+        return () => {
+            unsubFromAuth()
+            unsubFromConnection()
+        }
+    }, [dispatch])
+    
+    useEffect(() => {
+        let unsubFromUserConnection
+        if (user?.uid) {
+        unsubFromUserConnection = dispatch(checkUserConnection(user.uid))
+        }
+
+        return () => {
+        unsubFromUserConnection && unsubFromUserConnection()
+        }
+    }, [dispatch, user])
+
+
+    if (!isOnline) {
+        return <LoadingView message="Application has been disconnected from the internet. Please reconnect..." />
+    }
+    
+
+    if (isChecking) {
+        return <LoadingView />
+    }
+
+    return (
+        <Router>
+            <ContentWrapper>
+                <Switch>
+                    <Route exact path="/">
+                        <WelcomeView />
+                    </Route>
+                    <PrivateRoute path="/home">
+                        <HomeView />
+                    </PrivateRoute>
+                    <PrivateRoute path="/settings">
+                        <SettingsView />
+                    </PrivateRoute>
+                    <PrivateRoute path="/chatcreate">
+                        <ChatCreateView />
+                    </PrivateRoute>
+                    <PrivateRoute path="/chat/:id">
+                        <ChatView />
+                    </PrivateRoute>
+                </Switch>
+                <FooterView />
+            </ContentWrapper>
+        </Router>
+    )
+}
+
+
+export default App
