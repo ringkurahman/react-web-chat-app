@@ -22,7 +22,7 @@ const Navbar = ({ canGoBack, view }) => {
             { view !== 'Settings' &&
               <Link
                 to="/settings"
-                className="btn btn-outline-success ml-2">Settings
+                className="btn btn-sm btn-outline-success mx-2">Settings
               </Link>
             }
           </div>
@@ -34,7 +34,7 @@ const Navbar = ({ canGoBack, view }) => {
                   <span className="logged-in-user">Hi, { user.username }</span>
                   <button
                     onClick={() => dispatch(logout())}
-                    className="btn btn-sm btn-outline-danger ml-4">Logout
+                    className="btn btn-sm btn-outline-danger ml-2">Logout
                   </button>
                 </>
             }

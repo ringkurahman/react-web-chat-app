@@ -413,10 +413,12 @@ ul {
 
     &-left {
       display: flex;
+      align-items: center;
     }
 
     &-right {
       display: flex;
+      align-items: center;
     }
 
     .logged-in-user {

@@ -10,7 +10,7 @@ const BackButton = () => {
   return (
     <button
       onClick={() => history.goBack()}
-      className="btn btn-outline-primary">Back
+      className="btn btn-sm btn-outline-primary">Back
     </button>
   )
 }
