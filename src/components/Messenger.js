@@ -15,7 +15,8 @@ const Messenger = ({onSubmit}) => {
         }
   }
   
-  const sendMessage = () => {
+  const sendMessage = (e) => {
+    
     if (value.trim() === '') {
       return
     }
@@ -26,10 +27,11 @@ const Messenger = ({onSubmit}) => {
     }
 
     onSubmit(message)
+    setValue('')
   }
     
     return (
-    <div className="chat-input form-group mt-3 mb-0">
+    <div className="chat-input chat-button form-group mt-3 mb-0">
       <textarea
         onChange={e => setValue(e.target.value)}
         onKeyPress={onKeyPress}
@@ -37,7 +39,8 @@ const Messenger = ({onSubmit}) => {
         className="form-control"
         row="3"
         placeholder="Type your message here..">
-      </textarea>
+        </textarea>
+        <button className='btn btn-sm btn-outline-primary mt-2' onClick={sendMessage}>Send</button>
     </div>
   )
 }
