@@ -441,7 +441,7 @@ ul {
   height: 100%;
 
   .centered-container-form {
-    width: 784px;
+    width: 284px;
     padding: 32px;
     font-size: 18px;
     -webkit-box-shadow: 0 2px 10px 0 rgba(0,0,0,.2);
@@ -480,12 +480,18 @@ ul {
       margin-bottom: 5px;
       color: $gray-700;
     }
-  }
+  }  
+}
 
-  @media (max-width: 830px) {
-    .centered-container-form  {
-      max-width: 480px;
-    }
+@media only screen and (min-width:767px){
+  .centered-container-form {
+    min-width: 684px;
+  }
+}
+
+@media only screen and (min-width:1023px){
+  .centered-container-form {
+    min-width: 784px;
   }
 }
 
